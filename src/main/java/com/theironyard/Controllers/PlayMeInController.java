@@ -33,6 +33,11 @@ public class PlayMeInController {
     public static final String BASICPATH = "/Users/lee/workspace/PlayMeIn/src/main/resources/MusicAssets/";
     public static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ12345890";
 
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public String home() {
+        return "index";
+    }
+
     @RequestMapping(path = "/new-song", method = RequestMethod.POST)
     public String newSong(Model model, String genre) throws Exception {
         List<Path> paths = new ArrayList<>();
