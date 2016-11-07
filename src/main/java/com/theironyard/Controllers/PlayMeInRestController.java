@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PlayMeInRestController {
     @Autowired
-    LoopRepository epicMinorLoops;
+    LoopRepository loops;
 
     // RECEIVING String genre, String voice, and Multipart-File music
 //    @RequestMapping("/upload")
