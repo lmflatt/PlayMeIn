@@ -2,7 +2,12 @@ package com.theironyard.Controllers;
 
 import com.theironyard.Repositories.LoopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Created by lee on 11/3/16.
@@ -13,20 +18,18 @@ public class PlayMeInRestController {
     LoopRepository loops;
 
     // RECEIVING String genre, String voice, and Multipart-File music
-//    @RequestMapping("/upload")
-//    public Photo upload(
-//            HttpSession session,
-//            HttpServletResponse response,
-//            String genre,
-//            String voice,
-//            MultipartFile sample
-//    ) throws Exception {
-//        String userName = (String) session.getAttribute("userName");
-//        if (userName == null) {
-//            throw new Exception("not logged in.");
-//        }
-//        User sender = users.findFirstByName(userName);
-//        User receiverUser = users.findFirstByName(receiver);
+    @RequestMapping("/upload")
+    public String upload(
+            HttpSession session,
+            HttpServletResponse response,
+            String genre,
+            String voice,
+            MultipartFile sample
+    ) throws Exception {
+        String userName = (String) session.getAttribute("userName");
+        if (userName == null) {
+            throw new Exception("not logged in.");
+        }
 //
 //        if (receiverUser == null) {
 //            throw new Exception("Receiver does not exist.");
@@ -55,5 +58,6 @@ public class PlayMeInRestController {
 //
 //        response.sendRedirect("/");
 //        return p;
-//    }
+        return "";  //Todo remove this return statement.
+    }
 }

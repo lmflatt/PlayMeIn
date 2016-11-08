@@ -2,7 +2,11 @@ package com.theironyard.Controllers;
 
 import com.theironyard.Entities.Loop;
 import com.theironyard.Repositories.LoopRepository;
+import io.minio.MinioClient;
+import io.minio.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +18,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,7 +29,16 @@ import java.util.Random;
 
 
 @Controller
+@PropertySource("classpath:application.properties")
 public class PlayMeInController {
+    @Value("${aws.accessid}")
+    private String accessid;
+    @Value("${aws.accesskey}")
+    private String accesskey;
+    @Value("{aws.bucket")
+    private String bucket;
+
+
     @Autowired
     LoopRepository loops;
 
@@ -42,6 +55,7 @@ public class PlayMeInController {
     public String newSong(Model model, String genre) throws Exception {
         List<Path> paths = new ArrayList<>();
         Random rng = new Random();
+        loadMusicAssetsFromS3();
         for (String voice : VOICES) {
             List<Loop> partLoops = loops.FindByGenreAndVoice(genre, voice);
             int loopNumber = rng.nextInt(partLoops.size()) + 1;
@@ -57,7 +71,14 @@ public class PlayMeInController {
         return "preview";
     }
 
-    public String mergeSoundFiles(List<Path> paths, String tempName) throws IOException {
+    private void loadMusicAssetsFromS3() throws Exception {
+        // pull down files from S3 into ____(/tmp ? directory)
+        MinioClient s3Client = new MinioClient("https: //s3.amazonaws.com", accessid, accesskey);
+        s3Client.getObject(bucket, fileName);
+        }
+
+
+    public String mergeSoundFiles(List<Path> paths, String tempName) throws Exception {
         List<byte[]> bytesList = new ArrayList<>();
         for (Path p : paths) {
             bytesList.add(Files.readAllBytes(p));
@@ -87,7 +108,16 @@ public class PlayMeInController {
         File file = new File(fileName);
         AudioSystem.write(stream, AudioFileFormat.Type.WAVE, file);
 
+        // TODO: Does the created file need to go to S3?
+        storeMusicAssetsToS3(tempName + ".wav", stream);
+
         return fileName;
+    }
+
+    private void storeMusicAssetsToS3(String fileName, InputStream stream) throws Exception {
+        System.out.println("\nBUCKET = " + bucket + "\nSECRET-ACCESS-ID = " + accessid);
+        MinioClient s3Client = new MinioClient("https: //s3.amazonaws.com", accessid, accesskey);
+        s3Client.putObject(bucket, fileName, stream, stream.available(), "application/octet-stream");
     }
 
     public static String generateString(Random rng)
