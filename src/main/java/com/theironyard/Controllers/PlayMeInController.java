@@ -3,10 +3,10 @@ package com.theironyard.Controllers;
 import com.theironyard.Entities.Loop;
 import com.theironyard.Repositories.LoopRepository;
 import io.minio.MinioClient;
-import io.minio.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,11 +33,14 @@ import java.util.Random;
 public class PlayMeInController {
     @Value("${aws.accessid}")
     private String accessid;
-    @Value("${aws.accesskey}")
-    private String accesskey;
+
+    @Autowired
+    private Environment environment;
+
+    private String accesskey = environment.getProperty("AWS_ACCESSKEY");
+
     @Value("{aws.bucket")
     private String bucket;
-
 
     @Autowired
     LoopRepository loops;
