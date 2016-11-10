@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Play Me In</title>
+    <link type="text/css" rel="stylesheet" href="css/main.css" />
 </head>
 <body>
 
-    <form action="/new-song" method="post">
-        <select>
-            <option selected disabled>Choose a Genre</option>
-            <option value="epicMinor">Cinematic Epic in Minor Key</option>
-            <option disabled>More coming soon...</option>
+    <div class="container">
+        <img src="assets/PlayMeInLogoTextShadow.png" />
+        <form class="song-form" action="/new-song" method="post">
+            <select>
+                <option selected disabled>Choose a Genre</option>
+                <option value="epicMinor">Cinematic Epic in Minor Key</option>
+                <option disabled>More coming soon...</option>
+            </select>
             <button type="submit">Create!</button>
-        </select>
-    </form>
+        </form>
+    </div>
 
 </body>
 </html>

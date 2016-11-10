@@ -1,4 +1,4 @@
-package com.theironyard.Entities;
+package com.theironyard.entities;
 
 import javax.persistence.*;
 
@@ -6,7 +6,7 @@ import javax.persistence.*;
  * Created by lee on 11/3/16.
  */
 @Entity
-@Table(name = "epicMinorLoops")
+@Table(name = "loops")
 public class Loop {
     @Id
     @GeneratedValue

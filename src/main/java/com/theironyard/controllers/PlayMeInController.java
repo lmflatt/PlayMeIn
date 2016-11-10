@@ -1,8 +1,11 @@
-package com.theironyard.Controllers;
+package com.theironyard.controllers;
 
-import com.theironyard.Entities.Loop;
-import com.theironyard.Repositories.LoopRepository;
+import com.theironyard.entities.Loop;
+import com.theironyard.services.LoopRepository;
+import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +18,7 @@ import javax.sound.sampled.AudioSystem;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,10 +30,21 @@ import java.util.Random;
 
 @Controller
 public class PlayMeInController {
+    @Value("${aws.accessid}")
+    private String accessid;
+
+    @Autowired
+    private Environment environment;
+
+    private String accesskey = environment.getProperty("AWS_ACCESSKEY");
+
+    @Value("{aws.bucket")
+    private String bucket;
+
     @Autowired
     LoopRepository loops;
 
-    public static final ArrayList<String> VOICES = new ArrayList<String>(Arrays.asList("bass", "melody", "drum", "alt-drum", "harmony", "alt-harmony"));
+    public static final ArrayList<String> VOICES = new ArrayList<>(Arrays.asList("bass", "melody", "drum", "alt-drum", "harmony", "alt-harmony"));
     public static final String BASICPATH = "/Users/lee/workspace/PlayMeIn/src/main/resources/MusicAssets/";
     public static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ12345890";
 
@@ -43,9 +58,9 @@ public class PlayMeInController {
         List<Path> paths = new ArrayList<>();
         Random rng = new Random();
         for (String voice : VOICES) {
-            List<Loop> partLoops = loops.FindByGenreAndVoice(genre, voice);
+            List<Loop> partLoops = loops.findByGenreAndVoice(genre, voice);
             int loopNumber = rng.nextInt(partLoops.size()) + 1;
-            String pathEnd = String.format("%s/%s%d", genre, voice, loopNumber);
+            String pathEnd = String.format("%s%s%d", genre, voice, loopNumber);
             paths.add(Paths.get(BASICPATH, pathEnd));
         }
 
@@ -55,6 +70,12 @@ public class PlayMeInController {
         model.addAttribute("song", tempFileLocation);
 
         return "preview";
+    }
+
+    private void loadMusicAssetsFromS3(String fileName) throws Exception {
+        // pull down files from S3 into ____(/tmp ? directory)
+        MinioClient s3Client = new MinioClient("https: //s3.amazonaws.com", accessid, accesskey);
+        s3Client.getObject(bucket, fileName);
     }
 
     public String mergeSoundFiles(List<Path> paths, String tempName) throws IOException {
@@ -80,8 +101,11 @@ public class PlayMeInController {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(out);
         AudioFormat format = new AudioFormat(44100, 16, 2, true, false);
-        AudioInputStream stream = new AudioInputStream(bais, format,
-                out.length / format.getFrameSize());
+        AudioInputStream stream = new AudioInputStream(
+                bais,
+                format,
+                out.length / format.getFrameSize()
+        );
 
         String fileName = String.format("/tmp/%s.wav", tempName);
         File file = new File(fileName);

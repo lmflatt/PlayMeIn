@@ -1,0 +1,14 @@
+html {
+    background: url("/assets/PlayMeInLogoBlur.jpg") no-repeat center center fixed;
+    background-size: cover;
+}
+
+.container {
+    position: absolute;
+    top: 60%;
+    left: 5%;
+}
+
+.song-form {
+    margin-left: 40px;
+}

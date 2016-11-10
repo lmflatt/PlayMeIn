@@ -32,5 +32,6 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-mustache')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.postgresql:postgresql')
+	compile('io.minio:minio:2.0.41')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
