@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -49,11 +50,7 @@ public class PlayMeInRestController {
         int partNumber = loops.findByGenreAndVoice(genre, voice).size() + 1;
         String filePrefix = genre + voice + partNumber;
 
-        File wavFile = File.createTempFile(filePrefix, ".wav", new File("/resources/MusicAssets/"));
-        FileOutputStream fos = new FileOutputStream(wavFile);
-        fos.write(sample.getBytes());
-
-        storeMusicAssetsToS3(filePrefix + ".wav", stream);
+        storeMusicAssetsToS3(filePrefix + ".wav", sample);
 
         Loop loop = new Loop(genre, voice, partNumber);
         loops.save(loop);
