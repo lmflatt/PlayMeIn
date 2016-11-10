@@ -15,10 +15,7 @@ import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -45,7 +42,7 @@ public class PlayMeInController {
     LoopRepository loops;
 
     public static final ArrayList<String> VOICES = new ArrayList<>(Arrays.asList("bass", "melody", "drum", "alt-drum", "harmony", "alt-harmony"));
-    public static final String BASICPATH = "/Users/lee/workspace/PlayMeIn/src/main/resources/MusicAssets/";
+    public static final String BASICPATH = "/tmp/";
     public static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ12345890";
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
@@ -60,7 +57,8 @@ public class PlayMeInController {
         for (String voice : VOICES) {
             List<Loop> partLoops = loops.findByGenreAndVoice(genre, voice);
             int loopNumber = rng.nextInt(partLoops.size()) + 1;
-            String pathEnd = String.format("%s%s%d", genre, voice, loopNumber);
+            String pathEnd = String.format("%s%s%d.wav", genre, voice, loopNumber);
+            loadMusicAssetsFromS3(pathEnd);
             paths.add(Paths.get(BASICPATH, pathEnd));
         }
 
@@ -75,7 +73,9 @@ public class PlayMeInController {
     private void loadMusicAssetsFromS3(String fileName) throws Exception {
         // pull down files from S3 into ____(/tmp ? directory)
         MinioClient s3Client = new MinioClient("https: //s3.amazonaws.com", accessid, accesskey);
-        s3Client.getObject(bucket, fileName);
+        InputStream ins = s3Client.getObject(bucket, fileName);
+        FileOutputStream fos = new FileOutputStream(new File("/tmp/" + fileName));
+        fos.write(ins.read());
     }
 
     public String mergeSoundFiles(List<Path> paths, String tempName) throws IOException {
