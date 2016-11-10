@@ -74,7 +74,7 @@ public class PlayMeInController {
         return "preview";
     }
 
-    private void loadMusicAssetsFromS3() throws Exception {
+    private void loadMusicAssetsFromS3(String fileName) throws Exception {
         // pull down files from S3 into ____(/tmp ? directory)
         MinioClient s3Client = new MinioClient("https: //s3.amazonaws.com", accessid, accesskey);
         s3Client.getObject(bucket, fileName);
@@ -112,16 +112,17 @@ public class PlayMeInController {
         AudioSystem.write(stream, AudioFileFormat.Type.WAVE, file);
 
         // TODO: Does the created file need to go to S3?
-        storeMusicAssetsToS3(tempName + ".wav", stream);
+//        storeMusicAssetsToS3(tempName + ".wav", stream);
 
         return fileName;
     }
 
-    private void storeMusicAssetsToS3(String fileName, InputStream stream) throws Exception {
-        System.out.println("\nBUCKET = " + bucket + "\nSECRET-ACCESS-ID = " + accessid);
-        MinioClient s3Client = new MinioClient("https: //s3.amazonaws.com", accessid, accesskey);
-        s3Client.putObject(bucket, fileName, stream, stream.available(), "application/octet-stream");
-    }
+//    private void storeMusicAssetsToS3(String fileName, InputStream stream) throws Exception {
+//        System.out.println("\nBUCKET = " + bucket + "\nSECRET-ACCESS-ID = " + accessid);
+//        MinioClient s3Client = new MinioClient("https: //s3.amazonaws.com", accessid, accesskey);
+//        s3Client.putObject(bucket, fileName, stream, stream.available(), "application/octet-stream");
+//    }
+//      May need to place in RestController
 
     public static String generateString(Random rng)
     {
