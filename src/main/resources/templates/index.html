@@ -8,9 +8,10 @@
 <body>
 
     <div class="container">
-        <img src="assets/PlayMeInLogoTextShadow.png" />
+        <img src="assets/PlayMeInLogoText.png" id="logo" />
+        <img src="assets/PlayMeInLogoTextShadow.png" id="logo2" class="transparent"/>
         <form class="song-form" action="/new-song" method="post">
-            <select>
+            <select required>
                 <option selected disabled>Choose a Genre</option>
                 <option value="epicMinor">Cinematic Epic in Minor Key</option>
                 <option disabled>More coming soon...</option>
@@ -19,5 +20,7 @@
         </form>
     </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
 </body>
 </html>

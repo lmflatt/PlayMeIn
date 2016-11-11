@@ -19,10 +19,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 
 @Controller
@@ -30,10 +27,9 @@ public class PlayMeInController {
     @Value("${aws.accessid}")
     private String accessid;
 
-    @Autowired
-    private Environment environment;
+    private Map<String, String> env = System.getenv();
 
-    private String accesskey = environment.getProperty("AWS_ACCESSKEY");
+    private String accesskey = env.get("AWS_ACCESSKEY");//TODO refactor to helper controller
 
     @Value("{aws.bucket")
     private String bucket;
@@ -72,7 +68,7 @@ public class PlayMeInController {
 
     private void loadMusicAssetsFromS3(String fileName) throws Exception {
         // pull down files from S3 into ____(/tmp ? directory)
-        MinioClient s3Client = new MinioClient("https: //s3.amazonaws.com", accessid, accesskey);
+        MinioClient s3Client = new MinioClient("https://s3.amazonaws.com/", accessid, accesskey);
         InputStream ins = s3Client.getObject(bucket, fileName);
         FileOutputStream fos = new FileOutputStream(new File("/tmp/" + fileName));
         fos.write(ins.read());

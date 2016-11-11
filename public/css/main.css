@@ -1,6 +1,7 @@
 html {
-    background: url("/assets/PlayMeInLogoBlur.jpg") no-repeat center center fixed;
+    background: url("/assets/PlayMeInLogo.jpg") no-repeat center center fixed;
     background-size: cover;
+    transition: background .5s linear;
 }
 
 .container {
@@ -11,4 +12,19 @@ html {
 
 .song-form {
     margin-left: 40px;
+}
+
+#logo {
+    position: relative;
+}
+
+#logo2 {
+    position:absolute;
+    top: 0;
+    left:0;
+    transition: opacity .5s linear;
+}
+
+.transparent {
+    opacity: 0;
 }

@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Map;
 
 /**
  * Created by lee on 11/3/16.
@@ -26,13 +27,12 @@ public class PlayMeInRestController {
     @Value("${aws.accessid}")
     private String accessid;
 
-    @Autowired
-    private Environment environment;
-
-    private String accesskey = environment.getProperty("AWS_ACCESSKEY");
-
-    @Value("{aws.bucket")
+    @Value("${aws.bucket}")
     private String bucket;
+
+    private Map<String, String> env = System.getenv();
+
+    private String accesskey = env.get("AWS_ACCESSKEY");
 
     @Autowired
     LoopRepository loops;
@@ -41,7 +41,6 @@ public class PlayMeInRestController {
     @CrossOrigin
     @RequestMapping("/upload")
     public Loop upload(
-            HttpSession session,
             HttpServletResponse response,
             String genre,
             String voice,
