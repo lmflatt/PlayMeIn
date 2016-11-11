@@ -1,1 +1,1 @@
-web: java -jar target/helloworld.jar
+web: java $JAVA_OPTS -Dspring.profiles.active=heroku -Dserver.port=$PORT -jar build/classes/artifacts/PlayMeIn_jar/PlayMeIn.jar
