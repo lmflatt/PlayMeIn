@@ -48,7 +48,3 @@ dependencies {
 	compile('io.minio:minio:2.0.4')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
-
-task stage {
-	dependsOn build
-}
