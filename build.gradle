@@ -10,14 +10,27 @@ buildscript {
 	}
 }
 
+group 'com.theironyard'
+version '1.0-SNAPSHOT'
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'spring-boot'
 
+springBoot {
+	executable = true
+}
+
 jar {
 	baseName = 'PlayMeIn'
-	version = '0.0.1-SNAPSHOT'
+	version = '1.0'
+
+	doFirst {
+		from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+	}
+	exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
 }
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -34,4 +47,8 @@ dependencies {
 	compile('org.postgresql:postgresql')
 	compile('io.minio:minio:2.0.4')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+task stage {
+	dependsOn build
 }
