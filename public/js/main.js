@@ -4,12 +4,12 @@
 $(document).ready(function() {
 
     $('.container').mouseenter(function () {         //hover animation home button
-        $('html').css('background-image', 'url("assets/PlayMeInLogoBlur.jpg")');
+        $('#body-img').removeClass('transparent');
         $('#logo2').removeClass('transparent');
     });
 
     $('.container').mouseleave(function () {
-        $('html').css('background-image', 'url("assets/PlayMeInLogo.jpg")');
+        $('#body-img').addClass('transparent');
         $('#logo2').addClass('transparent');
     });
 });

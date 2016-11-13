@@ -1,7 +1,20 @@
 html {
     background: url("/assets/PlayMeInLogo.jpg") no-repeat center center fixed;
     background-size: cover;
-    transition: background .5s linear;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+}
+
+#body-img {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background: url("/assets/PlayMeInLogoBlur.jpg") no-repeat center center fixed;
+    background-size: cover;
+    transition: opacity .5s linear;
 }
 
 .container {
