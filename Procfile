@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -Dspring.profiles.active=heroku -Dserver.port=$PORT -jar target/PlayMeIn.jar
+web: java $JAVA_OPTS -Dspring.profiles.active=heroku -Dserver.port=$PORT -jar build/libs/PlayMeIn-1.0.jar
