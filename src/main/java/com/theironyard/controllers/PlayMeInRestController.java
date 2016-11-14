@@ -22,6 +22,7 @@ import java.util.Map;
 /**
  * Created by lee on 11/3/16.
  */
+@CrossOrigin
 @RestController
 public class PlayMeInRestController {
     @Value("${aws.accessid}")
