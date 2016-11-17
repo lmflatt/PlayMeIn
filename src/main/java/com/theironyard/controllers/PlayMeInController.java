@@ -46,6 +46,11 @@ public class PlayMeInController {
         return "index";
     }
 
+    @RequestMapping(path = "/admin", method = RequestMethod.GET)
+    public String admin() {
+        return "admin";
+    }
+
     @RequestMapping(path = "/new-song", method = RequestMethod.POST)
     public String newSong(Model model, String genre) throws Exception {
         List<Path> paths = new ArrayList<>();

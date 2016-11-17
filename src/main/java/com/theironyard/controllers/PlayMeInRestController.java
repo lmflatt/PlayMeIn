@@ -6,6 +6,7 @@ import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,8 +23,7 @@ import java.util.Map;
 /**
  * Created by lee on 11/3/16.
  */
-@CrossOrigin
-@RestController
+@Controller
 public class PlayMeInRestController {
     @Value("${aws.accessid}")
     private String accessid;
@@ -39,9 +39,8 @@ public class PlayMeInRestController {
     LoopRepository loops;
 
     // RECEIVING String genre, String voice, and Multipart-File music
-    @CrossOrigin
     @RequestMapping("/upload")
-    public Loop upload(
+    public String upload(
             HttpServletResponse response,
             String genre,
             String voice,
@@ -61,13 +60,12 @@ public class PlayMeInRestController {
         Loop loop = new Loop(genre, voice, partNumber);
         loops.save(loop);
 
-        response.sendRedirect("/");
-        return loop;
+        return "index";
     }
 
     private void storeMusicAssetsToS3(String fileName, InputStream stream) throws Exception {
-        System.out.println("\nBUCKET = " + bucket + "\nSECRET-ACCESS-ID = " + accessid);
-        MinioClient s3Client = new MinioClient("https: //s3.amazonaws.com", accessid, accesskey);
+        System.out.println("\nBUCKET = " + bucket + "\nSECRET_ACCESS_ID = " + accessid + "\n" + accesskey);
+        MinioClient s3Client = new MinioClient("https://s3.amazonaws.com", accessid, accesskey);
         s3Client.putObject(bucket, fileName, stream, stream.available(), "application/octet-stream");
     }
 }
