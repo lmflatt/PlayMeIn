@@ -41,7 +41,6 @@ public class PlayMeInRestController {
     // RECEIVING String genre, String voice, and Multipart-File music
     @RequestMapping("/upload")
     public String upload(
-            HttpServletResponse response,
             String genre,
             String voice,
             MultipartFile sample
@@ -49,13 +48,14 @@ public class PlayMeInRestController {
         int partNumber = loops.findByGenreAndVoice(genre, voice).size() + 1;
         String filePrefix = genre + voice + partNumber;
 
-        File wavFile = File.createTempFile(filePrefix, ".wav", new File("/tmp/"));
+//        File wavFile = File.createTempFile(filePrefix, ".wav", new File("/tmp/"));
+        File wavFile = new File("/tmp/", filePrefix + ".wav");
         FileOutputStream fos = new FileOutputStream(wavFile);
         fos.write(sample.getBytes());
 
-        FileInputStream fis = new FileInputStream(wavFile);
-
-        storeMusicAssetsToS3(filePrefix + ".wav", fis);
+//        FileInputStream fis = new FileInputStream(wavFile);
+//
+//        storeMusicAssetsToS3(filePrefix + ".wav", fis);
 
         Loop loop = new Loop(genre, voice, partNumber);
         loops.save(loop);
@@ -64,8 +64,8 @@ public class PlayMeInRestController {
     }
 
     private void storeMusicAssetsToS3(String fileName, InputStream stream) throws Exception {
-        System.out.println("\nBUCKET = " + bucket + "\nSECRET_ACCESS_ID = " + accessid + "\n" + accesskey);
+//        System.out.println("\nBUCKET = " + bucket + "\nSECRET_ACCESS_ID = " + accessid + "\n" + accesskey);
         MinioClient s3Client = new MinioClient("https://s3.amazonaws.com", accessid, accesskey);
-        s3Client.putObject(bucket, fileName, stream, stream.available(), "application/octet-stream");
+        s3Client.putObject(bucket, fileName, stream, stream.available(), "audio/wav");
     }
 }

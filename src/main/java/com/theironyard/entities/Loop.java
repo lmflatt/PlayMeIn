@@ -57,4 +57,9 @@ public class Loop {
     public void setPartid(Integer partid) {
         this.partid = partid;
     }
+
+    @Override
+    public String toString() {
+        return genre + voice + partid;
+    }
 }

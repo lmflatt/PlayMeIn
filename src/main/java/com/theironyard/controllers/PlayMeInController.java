@@ -31,7 +31,7 @@ public class PlayMeInController {
 
     private String accesskey = env.get("AWS_ACCESSKEY");//TODO refactor to helper controller
 
-    @Value("{aws.bucket")
+    @Value("${aws.bucket}")
     private String bucket;
 
     @Autowired
@@ -57,9 +57,10 @@ public class PlayMeInController {
         Random rng = new Random();
         for (String voice : VOICES) {
             List<Loop> partLoops = loops.findByGenreAndVoice(genre, voice);
+            System.out.println(partLoops.get(0).toString());
             int loopNumber = rng.nextInt(partLoops.size()) + 1;
             String pathEnd = String.format("%s%s%d.wav", genre, voice, loopNumber);
-            loadMusicAssetsFromS3(pathEnd);
+//            loadMusicAssetsFromS3(pathEnd);
             paths.add(Paths.get(BASICPATH, pathEnd));
         }
 
@@ -108,8 +109,8 @@ public class PlayMeInController {
                 out.length / format.getFrameSize()
         );
 
-        String fileName = String.format("/tmp/%s.wav", tempName);
-        File file = new File(fileName);
+        String fileName = String.format("%s.wav", tempName);
+        File file = new File("/tmp/", fileName);
         AudioSystem.write(stream, AudioFileFormat.Type.WAVE, file);
 
         return fileName;
