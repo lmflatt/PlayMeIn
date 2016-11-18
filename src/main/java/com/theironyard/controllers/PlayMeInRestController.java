@@ -48,14 +48,13 @@ public class PlayMeInRestController {
         int partNumber = loops.findByGenreAndVoice(genre, voice).size() + 1;
         String filePrefix = genre + voice + partNumber;
 
-//        File wavFile = File.createTempFile(filePrefix, ".wav", new File("/tmp/"));
         File wavFile = new File("/tmp/", filePrefix + ".wav");
         FileOutputStream fos = new FileOutputStream(wavFile);
         fos.write(sample.getBytes());
 
-//        FileInputStream fis = new FileInputStream(wavFile);
+        FileInputStream fis = new FileInputStream(wavFile);
 //
-//        storeMusicAssetsToS3(filePrefix + ".wav", fis);
+        storeMusicAssetsToS3(filePrefix + ".wav", fis);
 
         Loop loop = new Loop(genre, voice, partNumber);
         loops.save(loop);
