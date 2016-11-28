@@ -38,7 +38,7 @@ public class PlayMeInController {
     LoopRepository loops;
 
     public static final ArrayList<String> VOICES = new ArrayList<>(Arrays.asList("bass", "melody", "drum", "alt-drum", "harmony", "alt-harmony"));
-    public static final String BASICPATH = "/tmp/";
+    public static final String BASICPATH = "temp/";
     public static final String CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ12345890";
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
@@ -67,6 +67,9 @@ public class PlayMeInController {
         String tempName = generateString(rng);
         String tempFileLocation = mergeSoundFiles(paths, tempName);
 
+        removeTempFiles(paths);
+        delayDeleteGeneratedSong(tempFileLocation);
+
         model.addAttribute("song", tempFileLocation);
 
         return "preview";
@@ -76,7 +79,7 @@ public class PlayMeInController {
         // pull down files from S3 into ____(/tmp ? directory)
         MinioClient s3Client = new MinioClient("https://s3.amazonaws.com/", accessid, accesskey);
         InputStream ins = s3Client.getObject(bucket, fileName);
-        FileOutputStream fos = new FileOutputStream(new File("/tmp/" + fileName));
+        FileOutputStream fos = new FileOutputStream(new File("temp/" + fileName));
         fos.write(ins.read());
     }
 
@@ -110,7 +113,7 @@ public class PlayMeInController {
         );
 
         String fileName = String.format("%s.wav", tempName);
-        File file = new File("/tmp/", fileName);
+        File file = new File("temp/", fileName);
         AudioSystem.write(stream, AudioFileFormat.Type.WAVE, file);
 
         return fileName;
@@ -124,5 +127,17 @@ public class PlayMeInController {
             text[i] = CHARS.charAt(rng.nextInt(CHARS.length()));
         }
         return new String(text);
+    }
+
+    private void removeTempFiles(List<Path> paths) {
+        for (Path path : paths) {
+            try {
+                Files.delete(path);
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    private void delayDeleteGeneratedSong(String tempFileLocation) {
     }
 }
