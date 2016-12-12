@@ -60,7 +60,7 @@ public class PlayMeInController {
             System.out.println(partLoops.get(0).toString());
             int loopNumber = rng.nextInt(partLoops.size()) + 1;
             String pathEnd = String.format("%s%s%d.wav", genre, voice, loopNumber);
-//            loadMusicAssetsFromS3(pathEnd);
+            loadMusicAssetsFromS3(pathEnd);
             paths.add(Paths.get(BASICPATH, pathEnd));
         }
 
