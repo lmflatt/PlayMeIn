@@ -1,8 +1,16 @@
 package com.theironyard.controllers;
 
+import com.amazonaws.SDKGlobalConfiguration;
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import com.theironyard.entities.Loop;
 import com.theironyard.services.LoopRepository;
-import io.minio.MinioClient;
+//import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -29,7 +37,7 @@ public class PlayMeInController {
 
     private Map<String, String> env = System.getenv();
 
-    private String accesskey = env.get("AWS_ACCESSKEY");//TODO refactor to helper controller
+    private String accesskey = env.get("AWS_SECRET_KEY");//TODO refactor to helper controller
 
     @Value("${aws.bucket}")
     private String bucket;
@@ -77,8 +85,13 @@ public class PlayMeInController {
 
     private void loadMusicAssetsFromS3(String fileName) throws Exception {
         // pull down files from S3 into ____(/tmp ? directory)
-        MinioClient s3Client = new MinioClient("https://s3.amazonaws.com/", accessid, accesskey);
-        InputStream ins = s3Client.getObject(bucket, fileName);
+//        MinioClient s3Client = new MinioClient("https://s3.amazonaws.com/", accessid, accesskey);
+//        InputStream ins = s3Client.getObject(bucket, fileName);
+
+        AmazonS3 s3Client = new AmazonS3Client(new EnvironmentVariableCredentialsProvider().getCredentials());
+        S3Object object = s3Client.getObject(new GetObjectRequest(bucket, accesskey));
+        InputStream ins = object.getObjectContent();
+
         FileOutputStream fos = new FileOutputStream(new File("temp/" + fileName));
         fos.write(ins.read());
     }
